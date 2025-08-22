@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Matrix MFA Demo</title>
-  <link rel="stylesheet" href="style.css">
-
-  <!-- OTPAuth UMD for browser -->
+  <link rel="stylesheet" href="style.css" />
+  
+  <!-- OTPAuth UMD + QRCode libraries -->
   <script src="https://cdn.jsdelivr.net/npm/otpauth@10.0.2/dist/otpauth.umd.js"></script>
-
-  <!-- QRCode library -->
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 </head>
 <body>
   <canvas id="matrix"></canvas>
-
+  
   <div class="qr-container">
     <h1>Scan QR in Google Authenticator</h1>
     <canvas id="qrcode" width="200" height="200"></canvas>
@@ -24,6 +22,7 @@
     <div id="result"></div>
   </div>
 
+  <!-- Script that handles matrix + TOTP -->
   <script src="script.js"></script>
 </body>
 </html>
