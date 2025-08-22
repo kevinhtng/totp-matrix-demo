@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(drawMatrix, 33);
 
   // --- TOTP SETUP ---
-  const secret = OTPAuth.Secret.fromBase32("S3CR3TD3M0K3YQWER");
+  const secret = OTPAuth.Secret.fromBase32("JBSWY3DPEHPK3PXP");
   const totp = new OTPAuth.TOTP({
     issuer: "Demo",
     label: "MatrixMFA",
