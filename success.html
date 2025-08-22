@@ -36,7 +36,6 @@
 
   <p>
     2. Google Authenticator uses this secret and the current time to generate a 6-digit code that changes every 30 seconds.
-    This ensures that codes are always time-sensitive and valid for only a short period.
   </p>
 
   <p>
@@ -45,15 +44,11 @@
   </p>
 
   <p>
-    4. This demonstrates the core concept of TOTP: <strong>both the client (Authenticator app) and the server (or page) can independently generate the same one-time password using the shared secret and the current time.</strong>
+    4. The QR code you scanned encodes the secret so the app can generate the correct codes automatically.
   </p>
 
   <p>
-    5. The QR code you scanned simplifies this process: it encodes the secret and tells the app how to generate the correct codes automatically.
-  </p>
-
-  <p>
-    In a real-world scenario, this method secures logins by requiring something you know (your password) and something you have (the TOTP code) — a form of <strong>multi-factor authentication (MFA)</strong>.
+    This demonstrates the core concept of TOTP: <strong>both the client (Authenticator app) and the server (or page) can independently generate the same one-time password using the shared secret and current time.</strong>
   </p>
 </body>
 </html>
