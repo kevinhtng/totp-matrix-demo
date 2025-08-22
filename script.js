@@ -45,16 +45,20 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- CODE VERIFICATION ---
-  window.checkCode = function() {
+  function checkCode() {
     const input = document.getElementById("codeInput").value.trim();
     const token = totp.generate();
     const resultDiv = document.getElementById("result");
 
-    if(input === token){
+    if (input === token) {
       resultDiv.innerHTML = "<h3>Access Granted! Redirecting...</h3>";
-      setTimeout(()=>{ window.location.href="success.html"; }, 1000);
+      setTimeout(() => { window.location.href = "success.html"; }, 1000);
     } else {
       resultDiv.innerHTML = "<h3>Invalid Code.</h3>";
     }
-  };
+  }
+
+  // Attach button listener
+  const unlockBtn = document.getElementById("unlockBtn");
+  unlockBtn.addEventListener("click", checkCode);
 });
