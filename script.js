@@ -1,16 +1,5 @@
-// --- TOTP SETUP ---
-const secret = OTPAuth.Secret.fromBase32("JBSWY3DPEHPK3PXP");
-const totp = new OTPAuth.TOTP({
-  issuer: "Demo",
-  label: "MatrixMFA",
-  algorithm: "SHA1",
-  digits: 6,
-  period: 30,
-  secret: secret
-});
-
-// --- MATRIX BACKGROUND ---
 document.addEventListener("DOMContentLoaded", () => {
+  // --- MATRIX BACKGROUND ---
   const canvas = document.getElementById("matrix");
   const ctx = canvas.getContext("2d");
 
@@ -44,32 +33,32 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   setInterval(drawMatrix, 33);
 
-  // --- DEBUG DISPLAY OF CURRENT TOTP ---
-  const qrContainer = document.querySelector(".qr-container");
-  const debugDiv = document.createElement("div");
-  debugDiv.style.marginTop = "10px";
-  debugDiv.style.fontSize = "20px";
-  debugDiv.style.color = "#00ff00";
-  qrContainer.appendChild(debugDiv);
+  // --- TOTP SETUP ---
+  const secret = OTPAuth.Secret.fromBase32("JBSWY3DPEHPK3PXP");
+  const totp = new OTPAuth.TOTP({
+    issuer: "Demo",
+    label: "MatrixMFA",
+    algorithm: "SHA1",
+    digits: 6,
+    period: 30,
+    secret: secret
+  });
 
-  function updateDebugCode() {
-    debugDiv.textContent = "Current TOTP: " + totp.generate();
-  }
-  updateDebugCode();
-  setInterval(updateDebugCode, 1000); // updates every second
-
-  // --- BUTTON HANDLER ---
-  const unlockBtn = document.querySelector("button");
-  unlockBtn.addEventListener("click", () => {
+  // --- CODE VERIFICATION ---
+  function checkCode() {
     const input = document.getElementById("codeInput").value.trim();
     const token = totp.generate();
     const resultDiv = document.getElementById("result");
 
-    if(input === token){
+    if (input === token) {
       resultDiv.innerHTML = "<h3>Access Granted! Redirecting...</h3>";
-      setTimeout(()=>{ window.location.href="success.html"; }, 1000);
+      setTimeout(() => { window.location.href = "success.html"; }, 1000);
     } else {
       resultDiv.innerHTML = "<h3>Invalid Code.</h3>";
     }
-  });
+  }
+
+  // Attach button listener
+  const unlockBtn = document.getElementById("unlockBtn");
+  unlockBtn.addEventListener("click", checkCode);
 });
