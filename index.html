@@ -1,31 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Matrix MFA Demo</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
+
+  <!-- OTPAuth UMD for browser -->
+  <script src="https://cdn.jsdelivr.net/npm/otpauth@10.0.2/dist/otpauth.umd.js"></script>
 </head>
 <body>
-  <!-- Matrix background -->
   <canvas id="matrix"></canvas>
 
-  <!-- UI -->
   <div class="qr-container">
     <h1>Scan QR in Google Authenticator</h1>
-
-    <!-- NOTE: qrcode.js expects a container <div>, not a <canvas> -->
-    <div id="qrcode"></div>
-
+    <!-- Use a static image instead of generated QR -->
+    <img src="qr.png" id="qrcode" alt="QR Code for Authenticator">
     <h3>Enter the code below:</h3>
-    <input type="text" id="codeInput" placeholder="6-digit code" inputmode="numeric" autocomplete="one-time-code" />
+    <input type="text" id="codeInput" placeholder="6-digit code">
     <button onclick="checkCode()">Unlock</button>
     <div id="result"></div>
   </div>
 
-  <!-- Local libraries (no CDNs) -->
-  <script src="libs/jsOTP.min.js"></script>
-  <script src="libs/qrcode.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
