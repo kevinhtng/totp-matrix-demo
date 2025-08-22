@@ -6,7 +6,7 @@
   <title>Matrix MFA Demo</title>
   <link rel="stylesheet" href="style.css">
 
-  <!-- OTPAuth UMD for browser -->
+  <!-- OTPAuth -->
   <script src="https://cdn.jsdelivr.net/npm/otpauth@10.0.2/dist/otpauth.umd.js"></script>
 </head>
 <body>
@@ -14,8 +14,7 @@
 
   <div class="qr-container">
     <h1>Scan QR in Google Authenticator</h1>
-    <!-- Use a static image instead of generated QR -->
-    <img src="qr.png" id="qrcode" alt="QR Code for Authenticator">
+    <img src="qr.png" id="qrcode" alt="QR Code">
     <h3>Enter the code below:</h3>
     <input type="text" id="codeInput" placeholder="6-digit code">
     <button onclick="checkCode()">Unlock</button>
