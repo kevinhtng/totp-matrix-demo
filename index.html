@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Matrix MFA Demo</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 
-  <!-- QR Code library -->
+  <!-- OTPAuth UMD for browser -->
+  <script src="https://cdn.jsdelivr.net/npm/otpauth@10.0.2/dist/otpauth.umd.js"></script>
+
+  <!-- QRCode library -->
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-
-  <!-- jsOTP library -->
-  <script src="https://cdn.jsdelivr.net/npm/jsotp@1.1.3/lib/jsotp.min.js"></script>
 </head>
 <body>
   <canvas id="matrix"></canvas>
