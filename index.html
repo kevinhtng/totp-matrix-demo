@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Matrix MFA Demo</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- QR and OTP libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/otplib@12.0.1/otplib-browser.min.js"></script>
+  <!-- Correct OTPLib UMD and QRCode libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/otplib@12.0.1/otplib-browser.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 </head>
 <body>
@@ -14,7 +14,6 @@
   
   <div class="qr-container">
     <h1>Scan QR in Google Authenticator</h1>
-    <!-- Added width/height attributes -->
     <canvas id="qrcode" width="200" height="200"></canvas>
     <h3>Enter the code below:</h3>
     <input type="text" id="codeInput" placeholder="6-digit code">
