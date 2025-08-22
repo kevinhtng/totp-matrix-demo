@@ -33,13 +33,19 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   setInterval(drawMatrix, 33);
 
-  // --- TOTP + QR CODE ---
-  const secret = "S3CR3TD3M0K3YQWER"; // demo secret
-  const totp = new window.jsOTP.totp(); // <- use window.jsOTP in browser
-  totp.setSecret(secret);
+  // --- TOTP SETUP ---
+  const secret = OTPAuth.Secret.fromBase32("S3CR3TD3M0K3YQWER"); // demo secret
+  const totp = new OTPAuth.TOTP({
+    issuer: "Demo",
+    label: "MatrixMFA",
+    algorithm: "SHA1",
+    digits: 6,
+    period: 30,
+    secret: secret
+  });
 
-  // Generate OTP URL for QR code
-  const otpUrl = `otpauth://totp/MatrixMFA?secret=${secret}&issuer=Demo`;
+  // Generate QR code
+  const otpUrl = totp.toString();
   const qrCanvas = document.getElementById("qrcode");
   QRCode.toCanvas(qrCanvas, otpUrl, function(error) {
     if (error) console.error(error);
@@ -49,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- CODE VERIFICATION ---
   window.checkCode = function() {
     const input = document.getElementById("codeInput").value.trim();
-    const token = totp.getOTP(); // current 6-digit code
+    const token = totp.generate(); // current 6-digit TOTP
     const resultDiv = document.getElementById("result");
 
     if (input === token) {
