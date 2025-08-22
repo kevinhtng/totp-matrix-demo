@@ -35,10 +35,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- TOTP + QR CODE ---
   const secret = "S3CR3TD3M0K3YQWER"; // demo secret
-  const totp = new jsOTP.totp();
+  const totp = new window.jsOTP.totp(); // <- use window.jsOTP in browser
   totp.setSecret(secret);
 
-  // Generate QR code (otpauth URL)
+  // Generate OTP URL for QR code
   const otpUrl = `otpauth://totp/MatrixMFA?secret=${secret}&issuer=Demo`;
   const qrCanvas = document.getElementById("qrcode");
   QRCode.toCanvas(qrCanvas, otpUrl, function(error) {
