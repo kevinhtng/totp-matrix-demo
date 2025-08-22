@@ -35,15 +35,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- TOTP + QR CODE ---
   const secret = "S3CR3TD3M0K3YQWER"; // demo secret
-  const totp = window.otplib.totp; // UMD version ensures this works
+  const totp = window.otplib.totp;
   totp.options = { digits: 6, step: 30 };
 
+  // Generate OTP URL for QR code
   const otpUrl = `otpauth://totp/MatrixMFA?secret=${secret}&issuer=Demo`;
   const qrCanvas = document.getElementById("qrcode");
-  qrCanvas.width = 200;
-  qrCanvas.height = 200;
 
-  QRCode.toCanvas(qrCanvas, otpUrl, function (error) {
+  QRCode.toCanvas(qrCanvas, otpUrl, function(error) {
     if (error) console.error(error);
     else console.log("QR code generated!");
   });
