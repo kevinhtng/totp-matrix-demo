@@ -1,30 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TOTP Generator</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matrix MFA Demo</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>TOTP Generator</h1>
+  <!-- Matrix background -->
+  <canvas id="matrix"></canvas>
 
-    <label for="secret">Enter Secret (Base32):</label>
-    <input type="text" id="secret" placeholder="e.g. JBSWY3DPEHPK3PXP">
+  <!-- UI -->
+  <div class="qr-container">
+    <h1>Scan QR in Google Authenticator</h1>
 
-    <button id="generateBtn">Generate Code</button>
-
-    <div id="codeContainer">
-      <p>Current Code: <span id="code">------</span></p>
-      <p>Expires in: <span id="timer">30</span> sec</p>
-    </div>
-
-    <h2>QR Code</h2>
+    <!-- NOTE: qrcode.js expects a container <div>, not a <canvas> -->
     <div id="qrcode"></div>
+
+    <h3>Enter the code below:</h3>
+    <input type="text" id="codeInput" placeholder="6-digit code" inputmode="numeric" autocomplete="one-time-code" />
+    <button onclick="checkCode()">Unlock</button>
+    <div id="result"></div>
   </div>
 
-  <!-- Local libraries -->
+  <!-- Local libraries (no CDNs) -->
   <script src="libs/jsOTP.min.js"></script>
   <script src="libs/qrcode.min.js"></script>
   <script src="script.js"></script>
