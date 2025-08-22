@@ -35,12 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- TOTP + QR CODE ---
   const secret = "S3CR3TD3M0K3YQWER"; // demo secret
-  const totp = window.otplib.totp;
+  const totp = window.otplib.totp; // UMD version ensures this works
   totp.options = { digits: 6, step: 30 };
 
   const otpUrl = `otpauth://totp/MatrixMFA?secret=${secret}&issuer=Demo`;
   const qrCanvas = document.getElementById("qrcode");
-  // Ensure canvas has internal width/height
   qrCanvas.width = 200;
   qrCanvas.height = 200;
 
