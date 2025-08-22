@@ -1,68 +1,48 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // --- MATRIX BACKGROUND ---
-  const canvas = document.getElementById("matrix");
-  const ctx = canvas.getContext("2d");
+document.addEventListener('DOMContentLoaded', () => {
+  const otp = new jsOTP.totp();
+  const generateBtn = document.getElementById('generateBtn');
+  const codeElement = document.getElementById('code');
+  const timerElement = document.getElementById('timer');
+  const secretInput = document.getElementById('secret');
+  const qrcodeDiv = document.getElementById('qrcode');
 
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resizeCanvas();
-  window.addEventListener("resize", resizeCanvas);
+  let countdownInterval;
 
-  const chars = "アァイィウヴエェオカガキギクグケゲコゴサザシジスズセゼソゾタダチッヂツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモヤャユュヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  const fontSize = 14;
-  const columns = canvas.width / fontSize;
-  const drops = Array(Math.floor(columns)).fill(1);
+  function updateCode() {
+    const secret = secretInput.value.trim();
+    if (!secret) {
+      codeElement.textContent = "------";
+      timerElement.textContent = "30";
+      qrcodeDiv.innerHTML = '';
+      return;
+    }
 
-  function drawMatrix() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#0F0";
-    ctx.font = fontSize + "px monospace";
+    const code = otp.getOtp(secret);
+    codeElement.textContent = code;
 
-    for (let i = 0; i < drops.length; i++) {
-      const text = chars.charAt(Math.floor(Math.random() * chars.length));
-      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+    // Generate QR code
+    qrcodeDiv.innerHTML = '';
+    new QRCode(qrcodeDiv, {
+      text: `otpauth://totp/Example?secret=${secret}`,
+      width: 128,
+      height: 128
+    });
 
-      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0;
+    // Reset countdown
+    let timeLeft = 30 - Math.floor(Date.now() / 1000) % 30;
+    timerElement.textContent = timeLeft;
+
+    clearInterval(countdownInterval);
+    countdownInterval = setInterval(() => {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        clearInterval(countdownInterval);
+        updateCode(); // regenerate
+      } else {
+        timerElement.textContent = timeLeft;
       }
-      drops[i]++;
-    }
+    }, 1000);
   }
-  setInterval(drawMatrix, 33);
 
-  // --- TOTP SETUP ---
-  const secret = OTPAuth.Secret.fromBase32("S3CR3TD3M0K3YQWER");
-  const totp = new OTPAuth.TOTP({
-    issuer: "Demo",
-    label: "MatrixMFA",
-    algorithm: "SHA1",
-    digits: 6,
-    period: 30,
-    secret: secret
-  });
-
-  // Generate QR code
-  const otpUrl = totp.toString();
-  const qrCanvas = document.getElementById("qrcode");
-  QRCode.toCanvas(qrCanvas, otpUrl, function(err) {
-    if(err) console.error(err);
-    else console.log("QR code generated!");
-  });
-
-  // --- CODE VERIFICATION ---
-  window.checkCode = function() {
-    const input = document.getElementById("codeInput").value.trim();
-    const token = totp.generate();
-    const resultDiv = document.getElementById("result");
-
-    if(input === token){
-      resultDiv.innerHTML = "<h3>Access Granted! Redirecting...</h3>";
-      setTimeout(()=>{ window.location.href="success.html"; }, 1000);
-    } else {
-      resultDiv.innerHTML = "<h3>Invalid Code.</h3>";
-    }
-  };
+  generateBtn.addEventListener('click', updateCode);
 });
