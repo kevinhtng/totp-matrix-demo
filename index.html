@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Matrix MFA Demo</title>
-  <link rel="stylesheet" href="style.css" />
-  
-  <!-- OTPAuth UMD + QRCode libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/otpauth@10.0.2/dist/otpauth.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TOTP Generator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <canvas id="matrix"></canvas>
-  
-  <div class="qr-container">
-    <h1>Scan QR in Google Authenticator</h1>
-    <canvas id="qrcode" width="200" height="200"></canvas>
-    <h3>Enter the code below:</h3>
-    <input type="text" id="codeInput" placeholder="6-digit code">
-    <button onclick="checkCode()">Unlock</button>
-    <div id="result"></div>
+  <div class="container">
+    <h1>TOTP Generator</h1>
+
+    <label for="secret">Enter Secret (Base32):</label>
+    <input type="text" id="secret" placeholder="e.g. JBSWY3DPEHPK3PXP">
+
+    <button id="generateBtn">Generate Code</button>
+
+    <div id="codeContainer">
+      <p>Current Code: <span id="code">------</span></p>
+      <p>Expires in: <span id="timer">30</span> sec</p>
+    </div>
+
+    <h2>QR Code</h2>
+    <div id="qrcode"></div>
   </div>
 
-  <!-- Script that handles matrix + TOTP -->
+  <!-- Local libraries -->
+  <script src="libs/jsOTP.min.js"></script>
+  <script src="libs/qrcode.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
