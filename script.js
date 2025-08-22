@@ -1,48 +1,81 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const otp = new jsOTP.totp();
-  const generateBtn = document.getElementById('generateBtn');
-  const codeElement = document.getElementById('code');
-  const timerElement = document.getElementById('timer');
-  const secretInput = document.getElementById('secret');
-  const qrcodeDiv = document.getElementById('qrcode');
+document.addEventListener("DOMContentLoaded", () => {
+  // -------- MATRIX BACKGROUND --------
+  const canvas = document.getElementById("matrix");
+  const ctx = canvas.getContext("2d");
 
-  let countdownInterval;
-
-  function updateCode() {
-    const secret = secretInput.value.trim();
-    if (!secret) {
-      codeElement.textContent = "------";
-      timerElement.textContent = "30";
-      qrcodeDiv.innerHTML = '';
-      return;
-    }
-
-    const code = otp.getOtp(secret);
-    codeElement.textContent = code;
-
-    // Generate QR code
-    qrcodeDiv.innerHTML = '';
-    new QRCode(qrcodeDiv, {
-      text: `otpauth://totp/Example?secret=${secret}`,
-      width: 128,
-      height: 128
-    });
-
-    // Reset countdown
-    let timeLeft = 30 - Math.floor(Date.now() / 1000) % 30;
-    timerElement.textContent = timeLeft;
-
-    clearInterval(countdownInterval);
-    countdownInterval = setInterval(() => {
-      timeLeft--;
-      if (timeLeft <= 0) {
-        clearInterval(countdownInterval);
-        updateCode(); // regenerate
-      } else {
-        timerElement.textContent = timeLeft;
-      }
-    }, 1000);
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
   }
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
 
-  generateBtn.addEventListener('click', updateCode);
+  const chars = "アァイィウヴエェオカガキギクグケゲコゴサザシジスズセゼソゾタダチッヂツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモヤャユュヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const fontSize = 14;
+  let columns = Math.floor(canvas.width / fontSize);
+  let drops = Array(columns).fill(1);
+
+  function drawMatrix() {
+    // cool fade
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#0F0";
+    ctx.font = fontSize + "px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = chars.charAt(Math.floor(Math.random() * chars.length));
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }
+  setInterval(drawMatrix, 33);
+
+  // Adjust drops when resizing
+  window.addEventListener("resize", () => {
+    columns = Math.floor(canvas.width / fontSize);
+    drops = Array(columns).fill(1);
+  });
+
+  // -------- TOTP + QR (all local libs) --------
+  // Use a VALID Base32 secret (A-Z and 2-7). You can change this.
+  const SECRET_BASE32 = "JBSWY3DPEHPK3PXP"; // demo secret (works)
+  const otp = new jsOTP.totp(); // defaults: 30s period, 6 digits, SHA1
+
+  // Build otpauth URL for Google Authenticator
+  const issuer = "Demo";
+  const account = "MatrixMFA";
+  const otpUrl = `otpauth://totp/${encodeURIComponent(issuer)}:${encodeURIComponent(account)}?secret=${SECRET_BASE32}&issuer=${encodeURIComponent(issuer)}`;
+
+  // Render QR into the #qrcode container (qrcode.js)
+  const qrContainer = document.getElementById("qrcode");
+  // clear first in case of hot reload
+  qrContainer.innerHTML = "";
+  new QRCode(qrContainer, {
+    text: otpUrl,
+    width: 200,
+    height: 200,
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  // -------- CODE VERIFICATION --------
+  window.checkCode = function() {
+    const input = document.getElementById("codeInput").value.trim();
+    const token = otp.getOtp(SECRET_BASE32); // current 6-digit TOTP
+
+    const resultDiv = document.getElementById("result");
+    if (input === token) {
+      resultDiv.innerHTML = "<h3>Access Granted! Redirecting...</h3>";
+      setTimeout(() => {
+        window.location.href = "success.html";
+      }, 800);
+    } else {
+      resultDiv.innerHTML = "<h3>Invalid Code.</h3>";
+    }
+  };
 });
+
