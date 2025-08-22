@@ -38,11 +38,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const totp = window.otplib.totp;
   totp.options = { digits: 6, step: 30 };
 
-  // Generate QR code dynamically
   const otpUrl = `otpauth://totp/MatrixMFA?secret=${secret}&issuer=Demo`;
   const qrCanvas = document.getElementById("qrcode");
+  // Ensure canvas has internal width/height
+  qrCanvas.width = 200;
+  qrCanvas.height = 200;
+
   QRCode.toCanvas(qrCanvas, otpUrl, function (error) {
     if (error) console.error(error);
+    else console.log("QR code generated!");
   });
 
   // --- CODE VERIFICATION ---
