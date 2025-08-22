@@ -14,7 +14,8 @@
   
   <div class="qr-container">
     <h1>Scan QR in Google Authenticator</h1>
-    <canvas id="qrcode"></canvas>
+    <!-- Added width/height attributes -->
+    <canvas id="qrcode" width="200" height="200"></canvas>
     <h3>Enter the code below:</h3>
     <input type="text" id="codeInput" placeholder="6-digit code">
     <button onclick="checkCode()">Unlock</button>
