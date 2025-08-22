@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // -------- MATRIX BACKGROUND --------
+  // --- MATRIX BACKGROUND ---
   const canvas = document.getElementById("matrix");
   const ctx = canvas.getContext("2d");
 
@@ -12,14 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const chars = "アァイィウヴエェオカガキギクグケゲコゴサザシジスズセゼソゾタダチッヂツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモヤャユュヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const fontSize = 14;
-  let columns = Math.floor(canvas.width / fontSize);
-  let drops = Array(columns).fill(1);
+  const columns = canvas.width / fontSize;
+  const drops = Array(Math.floor(columns)).fill(1);
 
   function drawMatrix() {
-    // cool fade
     ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     ctx.fillStyle = "#0F0";
     ctx.font = fontSize + "px monospace";
 
@@ -35,47 +33,28 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   setInterval(drawMatrix, 33);
 
-  // Adjust drops when resizing
-  window.addEventListener("resize", () => {
-    columns = Math.floor(canvas.width / fontSize);
-    drops = Array(columns).fill(1);
+  // --- TOTP SETUP ---
+  const secret = OTPAuth.Secret.fromBase32("S3CR3TD3M0K3YQWER");
+  const totp = new OTPAuth.TOTP({
+    issuer: "Demo",
+    label: "MatrixMFA",
+    algorithm: "SHA1",
+    digits: 6,
+    period: 30,
+    secret: secret
   });
 
-  // -------- TOTP + QR (all local libs) --------
-  // Use a VALID Base32 secret (A-Z and 2-7). You can change this.
-  const SECRET_BASE32 = "JBSWY3DPEHPK3PXP"; // demo secret (works)
-  const otp = new jsOTP.totp(); // defaults: 30s period, 6 digits, SHA1
-
-  // Build otpauth URL for Google Authenticator
-  const issuer = "Demo";
-  const account = "MatrixMFA";
-  const otpUrl = `otpauth://totp/${encodeURIComponent(issuer)}:${encodeURIComponent(account)}?secret=${SECRET_BASE32}&issuer=${encodeURIComponent(issuer)}`;
-
-  // Render QR into the #qrcode container (qrcode.js)
-  const qrContainer = document.getElementById("qrcode");
-  // clear first in case of hot reload
-  qrContainer.innerHTML = "";
-  new QRCode(qrContainer, {
-    text: otpUrl,
-    width: 200,
-    height: 200,
-    correctLevel: QRCode.CorrectLevel.M
-  });
-
-  // -------- CODE VERIFICATION --------
+  // --- CODE VERIFICATION ---
   window.checkCode = function() {
     const input = document.getElementById("codeInput").value.trim();
-    const token = otp.getOtp(SECRET_BASE32); // current 6-digit TOTP
-
+    const token = totp.generate();
     const resultDiv = document.getElementById("result");
-    if (input === token) {
+
+    if(input === token){
       resultDiv.innerHTML = "<h3>Access Granted! Redirecting...</h3>";
-      setTimeout(() => {
-        window.location.href = "success.html";
-      }, 800);
+      setTimeout(()=>{ window.location.href="success.html"; }, 1000);
     } else {
       resultDiv.innerHTML = "<h3>Invalid Code.</h3>";
     }
   };
 });
-
